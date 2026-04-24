@@ -1,0 +1,208 @@
+.transferred-page {
+  min-height: 100vh;
+}
+
+.loader-state {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  color: #3b3b3b;
+}
+
+.copilot-topbar-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid hsl(var(--mgcl-neutral-border));
+  border-radius: 12px;
+  background: hsl(var(--mgcl-background));
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: hsl(var(--mgcl-neutral-text));
+  white-space: nowrap;
+}
+
+.copilot-topbar-cta {
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.copilot-topbar-cta:hover {
+  background: hsl(var(--mgcl-neutral-background-quiet));
+  border-color: hsl(var(--mgcl-neutral-border-loud));
+}
+
+.copilot-topbar-cta:focus-visible {
+  outline: 2px solid hsl(var(--mgcl-ring));
+  outline-offset: 2px;
+}
+
+.copilot-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.copilot-modal {
+  width: min(100%, 760px);
+  background: #fff;
+  border: 1px solid #d9d9dc;
+  border-radius: 28px;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
+  padding: 24px;
+  color: #1e2024;
+}
+
+.copilot-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.copilot-modal-header h2 {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 36px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.copilot-close-btn {
+  border: 0;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #52565f;
+}
+
+.copilot-modal-section {
+  border: 1px solid #d7d9de;
+  border-radius: 20px;
+  background: #f9fafb;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.copilot-modal-section h3 {
+  margin: 0 0 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+.copilot-modal-section p {
+  margin: 0 0 14px;
+  color: #6c7079;
+  font-size: 24px;
+  line-height: 1.25;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.copilot-textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  border: 1px solid #d4d8de;
+  border-radius: 16px;
+  background: #fff;
+  padding: 12px 14px;
+  font: 14px/1.4 'DM Sans', sans-serif;
+  color: #23262d;
+  box-sizing: border-box;
+}
+
+.copilot-textarea:focus-visible {
+  outline: 2px solid #9fb6ff;
+  outline-offset: 1px;
+}
+
+.copilot-empty-plan {
+  border: 1px solid #e0e3e8;
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px;
+  color: #6c7079;
+  font: 14px/1.4 'DM Sans', sans-serif;
+}
+
+.copilot-plan-list {
+  margin: 0;
+  padding: 0 0 0 22px;
+  color: #1e2024;
+  font: 14px/1.5 'DM Sans', sans-serif;
+}
+
+.copilot-plan-list li + li {
+  margin-top: 6px;
+}
+
+.copilot-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.copilot-secondary-btn,
+.copilot-primary-btn {
+  border-radius: 999px;
+  height: 38px;
+  padding: 0 18px;
+  font: 700 16px/1 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+
+.copilot-secondary-btn {
+  border: 1px solid #d3d7de;
+  background: #f2f3f5;
+  color: #2f333c;
+}
+
+.copilot-primary-btn {
+  border: 1px solid #20232a;
+  background: #20232a;
+  color: #fff;
+}
+
+.copilot-primary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 860px) {
+  .copilot-modal {
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .copilot-modal-header h2 {
+    font-size: 24px;
+  }
+
+  .copilot-modal-section h3 {
+    font-size: 20px;
+  }
+
+  .copilot-modal-section p {
+    font-size: 14px;
+  }
+
+  .copilot-modal-footer {
+    flex-wrap: wrap;
+  }
+}
