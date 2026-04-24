@@ -1,0 +1,2 @@
+# magical
+Automate the automation :)
