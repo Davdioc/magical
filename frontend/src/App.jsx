@@ -4,35 +4,31 @@ import './App.css'
 function App() {
   const [markup, setMarkup] = useState('')
   const [error, setError] = useState('')
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [taskDescription, setTaskDescription] = useState('')
-  const [proposedPlan, setProposedPlan] = useState([])
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [topbarOffset, setTopbarOffset] = useState(68)
+  const [chatInput, setChatInput] = useState('')
+  const [chatMessages, setChatMessages] = useState([
+    {
+      role: 'assistant',
+      text: 'Hi! I am your automation assistant. Describe what you want to automate and I will propose a step-by-step plan for your approval.',
+    },
+  ])
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleProposePlan = () => {
-    const cleanDescription = taskDescription.trim()
-    if (!cleanDescription) {
-      setProposedPlan([])
+  const handleSendMessage = () => {
+    const message = chatInput.trim()
+    if (!message) {
       return
     }
 
-    setProposedPlan([
-      'Clarify the trigger and desired final output for this automation.',
-      'Map each required step, including tools, systems, and data needed.',
-      'Add validations and fallback handling for edge cases.',
-      'Generate a runnable automation draft and prepare a test checklist.',
+    setChatMessages((previous) => [
+      ...previous,
+      { role: 'user', text: message },
+      {
+        role: 'assistant',
+        text: 'Got it. I can draft a proposed automation plan with trigger, core steps, validation, and fallback logic. If you want, include any systems or tools you need this to run in.',
+      },
     ])
-  }
-
-  const handleDenyPlan = () => {
-    setProposedPlan([])
-  }
-
-  const handleAcceptPlan = () => {
-    setIsModalOpen(false)
+    setChatInput('')
   }
 
   useEffect(() => {
@@ -89,42 +85,59 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!markup) {
-      return
-    }
-
-    const centerSlot = document.querySelector(
-      'div[class*="min-h-[68px]"] div[class*="left-1/2"][class*="top-1/2"]',
-    )
-
-    if (!centerSlot) {
-      return
-    }
-
-    centerSlot.replaceChildren()
-
-    const button = document.createElement('button')
-    button.type = 'button'
-    button.className = 'copilot-topbar-title copilot-topbar-cta'
-    button.textContent = 'Get started'
-    button.addEventListener('click', () => setIsModalOpen(true))
-    centerSlot.appendChild(button)
-  }, [markup, isModalOpen])
-
-  useEffect(() => {
-    if (!isModalOpen) {
+    if (!isChatOpen) {
       return
     }
 
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setIsModalOpen(false)
+        setIsChatOpen(false)
       }
     }
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [isModalOpen])
+  }, [isChatOpen])
+
+  useEffect(() => {
+    if (!markup) {
+      return
+    }
+
+    const getTopbarElement = () =>
+      document.querySelector('div[class*="min-h-[68px]"][class*="border-b"]')
+
+    let topbar = getTopbarElement()
+
+    const updateOffset = () => {
+      if (!topbar) {
+        topbar = getTopbarElement()
+      }
+
+      if (!topbar) {
+        setTopbarOffset(68)
+        return
+      }
+
+      const rect = topbar.getBoundingClientRect()
+      const measured = Math.round(rect.height)
+      setTopbarOffset(Number.isFinite(measured) && measured > 0 ? measured : 68)
+    }
+
+    updateOffset()
+
+    const observer = new ResizeObserver(updateOffset)
+    if (topbar) {
+      observer.observe(topbar)
+    }
+
+    window.addEventListener('resize', updateOffset)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', updateOffset)
+    }
+  }, [markup])
 
   if (error) {
     return <main className="loader-state">{error}</main>
@@ -141,68 +154,84 @@ function App() {
         dangerouslySetInnerHTML={{ __html: markup }}
       />
 
-      {isModalOpen && (
-        <div className="copilot-modal-backdrop" onClick={handleCloseModal}>
-          <section
-            className="copilot-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="automation-modal-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <header className="copilot-modal-header">
-              <h2 id="automation-modal-title">Describe what you want to automate</h2>
-              <button type="button" className="copilot-close-btn" onClick={handleCloseModal}>
-                ×
-              </button>
-            </header>
+      {!isChatOpen && (
+        <button
+          type="button"
+          className="copilot-ai-launcher"
+          aria-label="Open AI assistant"
+          onClick={() => setIsChatOpen(true)}
+        >
+          <span className="copilot-ai-launcher-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+              <rect x="5" y="5" width="14" height="14" rx="4" ry="4" />
+              <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+              <path d="M12 8.4l1.1 2.5 2.5 1.1-2.5 1.1-1.1 2.5-1.1-2.5-2.5-1.1 2.5-1.1z" />
+            </svg>
+          </span>
+        </button>
+      )}
 
-            <div className="copilot-modal-section">
-              <h3>Task description</h3>
-              <p>Tell the agent your goal, systems involved, and expected outcome.</p>
-              <textarea
-                className="copilot-textarea"
-                placeholder="Example: When a new lead is added in HubSpot, enrich the contact, create a Slack summary, and open a follow-up task in Asana."
-                value={taskDescription}
-                onChange={(event) => setTaskDescription(event.target.value)}
-              />
+      {isChatOpen && (
+        <aside
+          className="copilot-chat-panel"
+          role="dialog"
+          aria-label="AI assistant chat"
+          style={{
+            top: `${topbarOffset}px`,
+            height: `calc(100vh - ${topbarOffset}px)`,
+          }}
+        >
+          <header className="copilot-chat-header">
+            <div>
+              <h2>Automation Assistant</h2>
             </div>
+            <button
+              type="button"
+              className="copilot-chat-close"
+              aria-label="Close chat"
+              onClick={() => setIsChatOpen(false)}
+            >
+              ×
+            </button>
+          </header>
 
-            <div className="copilot-modal-section">
-              <h3>Proposed plan</h3>
-              <p>Review the plan before you choose to accept or deny it.</p>
-
-              {proposedPlan.length === 0 ? (
-                <div className="copilot-empty-plan">
-                  No plan proposed yet. Click Propose plan to generate one.
-                </div>
-              ) : (
-                <ol className="copilot-plan-list">
-                  {proposedPlan.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-              )}
-            </div>
-
-            <footer className="copilot-modal-footer">
-              <button type="button" className="copilot-secondary-btn" onClick={handleDenyPlan}>
-                Deny plan
-              </button>
-              <button type="button" className="copilot-secondary-btn" onClick={handleProposePlan}>
-                Propose plan
-              </button>
-              <button
-                type="button"
-                className="copilot-primary-btn"
-                onClick={handleAcceptPlan}
-                disabled={proposedPlan.length === 0}
+          <section className="copilot-chat-messages">
+            {chatMessages.map((message, index) => (
+              <article
+                key={`${message.role}-${index}`}
+                className={`copilot-message copilot-message-${message.role}`}
               >
-                Accept plan
-              </button>
-            </footer>
+                {message.text}
+              </article>
+            ))}
           </section>
-        </div>
+
+          <footer className="copilot-chat-input-row">
+            <input
+              type="text"
+              className="copilot-chat-input"
+              placeholder="Describe what you want to automate..."
+              value={chatInput}
+              onChange={(event) => setChatInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  handleSendMessage()
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="copilot-chat-send"
+              onClick={handleSendMessage}
+              aria-label="Send message"
+            >
+              <svg viewBox="0 0 24 24" role="presentation" focusable="false" aria-hidden="true">
+                <path d="M21.5 2.5 11 13" />
+                <path d="M21.5 2.5 15 21.5l-4-8-8-4z" />
+              </svg>
+            </button>
+          </footer>
+        </aside>
       )}
     </>
   )
