@@ -823,7 +823,7 @@
 }
 
 .node-panel-title {
-  font: 700 42px/1.1 'DM Sans', sans-serif;
+  font: 700 32px/1.1 'DM Sans', sans-serif;
   color: #111827;
   margin: 0 0 18px;
   letter-spacing: -0.02em;
@@ -844,7 +844,7 @@
   border-radius: 20px;
   background: #EAEBEB;
   color: #2e3542;
-  font: 600 20px/1 'DM Sans', sans-serif;
+  font: 600 14px/1 'DM Sans', sans-serif;
   cursor: pointer;
 }
 
@@ -1060,7 +1060,7 @@
   border-radius: 10px;
   background: #EAEBEB;
   font: 600 13px/1 'DM Sans', sans-serif;
-  color: #334155;
+  color: black;
   white-space: nowrap;
 }
 
@@ -1116,15 +1116,15 @@
 
 @media (max-width: 1280px) {
   .node-panel-title {
-    font-size: 36px;
+    font-size: 28px;
   }
 
   .np-action-primary {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .np-select {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -1233,7 +1233,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 15%;
   background: #eaebeb;
-  font: 500 12px/1 'DM Sans', sans-serif;
+  font: 600 12px/1 'DM Sans', sans-serif;
   color: black;
   white-space: nowrap;
 }
@@ -1334,43 +1334,81 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 2px 0;
+  padding: 0 2px 0 34px;
+  min-height: 24px;
   user-select: none;
+  position: relative;
+}
+
+.np-instructions-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #d5dbe3;
+  border-radius: 8px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.np-instructions-header:hover::before {
+  border-color: #c8ced8;
+}
+
+.np-instructions-header .np-field-label {
+  margin-bottom: 0;
+  font: 700 15px/1.1 'DM Sans', sans-serif;
+  color: #0f172a;
 }
 
 .np-steps-count {
   font: 400 13px/1 'DM Sans', sans-serif;
-  color: #9aa3b1;
+  color: #7b8798;
 }
 
 .np-step {
-  margin-top: 8px;
-  border: 1px solid #e8ecf1;
-  border-radius: 10px;
-  overflow: hidden;
+  position: relative;
+  margin-top: 10px;
+  margin-left: 32px;
+  border: 1px solid #dfe4ea;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.np-step-header {
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
 }
 
 .np-step-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 10px;
-  background: #f8fafc;
-  border-bottom: 1px solid #e8ecf1;
+  padding: 8px 12px;
+
 }
 
 .np-step-num {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  background: #e2e8f0;
-  font: 600 11px/1 'DM Sans', sans-serif;
-  color: #475569;
-  padding: 0 5px;
+  position: absolute;
+  left: -32px;
+  top: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d5dbe3;
+  font: 500 12px/1 'DM Sans', sans-serif;
+  color: #111827;
+  padding: 0;
   flex-shrink: 0;
+  box-sizing: border-box;
+  z-index: 1;
 }
 
 .np-step-badge {
@@ -1378,24 +1416,40 @@
   align-items: center;
   padding: 3px 9px;
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  font: 500 11px/1 ui-monospace, monospace;
-  color: #374151;
+  background: #eaebeb;
+  font: 600 12px/1 'DM Sans', sans-serif;
+  color: #1f2937;
 }
 
 .np-step-body {
-  padding: 10px 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .np-step-text {
-  font: 400 12px/1.55 'DM Sans', sans-serif;
-  color: #374151;
+  font: 400 14px/1.55 'DM Sans', sans-serif;
+  color: #0f172a;
   margin: 0;
   word-break: break-word;
+}
+
+.np-step-text p {
+  margin: 0 0 10px;
+}
+
+.np-step-text p:last-child {
+  margin-bottom: 0;
+}
+
+.np-step-text ul {
+  margin: 8px 0 12px 20px;
+  padding: 0;
+}
+
+.np-step-text li {
+  margin: 2px 0;
 }
 
 .np-step-row {
@@ -1415,9 +1469,9 @@
 .np-step-val-box {
   flex: 1;
   padding: 3px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #dbe1e8;
   border-radius: 6px;
-  background: #f8fafc;
+  background: #ffffff;
   color: #374151;
   font: 400 12px/1.4 'DM Sans', sans-serif;
   word-break: break-word;

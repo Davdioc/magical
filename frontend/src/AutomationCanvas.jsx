@@ -215,8 +215,8 @@ function CommandStep({ cmd, index, agentById }) {
   if (commandId === 'custom') {
     return (
       <div className="np-step">
+        <span className="np-step-num">{index + 1}</span>
         <div className="np-step-header">
-          <span className="np-step-num">{index + 1}</span>
           <span className="np-step-badge">custom</span>
         </div>
         <div className="np-step-body">
@@ -233,8 +233,8 @@ function CommandStep({ cmd, index, agentById }) {
     const params = Object.entries(input).filter(([k]) => k !== 'agent' && k !== 'waitUponQueueing')
     return (
       <div className="np-step">
+        <span className="np-step-num">{index + 1}</span>
         <div className="np-step-header">
-          <span className="np-step-num">{index + 1}</span>
           <span className="np-step-badge">{commandId}</span>
         </div>
         <div className="np-step-body">
@@ -264,8 +264,8 @@ function CommandStep({ cmd, index, agentById }) {
   const params = Object.entries(input)
   return (
     <div className="np-step">
+      <span className="np-step-num">{index + 1}</span>
       <div className="np-step-header">
-        <span className="np-step-num">{index + 1}</span>
         <span className="np-step-badge">{commandId}</span>
       </div>
       {params.length > 0 && (
@@ -305,7 +305,7 @@ const FieldChip = ({ name, schema, mode = 'variable' }) => {
 }
 
 function NodePanel({ agent, variant, agentById, onClose }) {
-  const [stepsOpen, setStepsOpen] = useState(false)
+  const [stepsOpen, setStepsOpen] = useState(true)
   const env = agent?.config?.environmentOptions
   const inputProps = Object.entries(agent?.inputSchema?.properties ?? {})
   const outputProps = Object.entries(agent?.outputSchema?.properties ?? {})
