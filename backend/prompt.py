@@ -39,6 +39,8 @@ Each command in `instructionsDoc.commands` has `id` (UUID), `orderKey` (0-based 
 - `custom`: free-form natural-language instruction. `input: { "instructions": "..." }`
 - `callSpecializedAgent`: synchronous delegation to another agent. `input: { "agent": ":chip{\\"id\\":\\"<agentId>\\",\\"groupId\\":\\"agent\\"}", "inputs": { "<paramName>": "<description or value>" } }`. Use `callSpecializedAgent` when the orchestrator must wait for the result.
 - `queueAgents`: fire-and-forget / concurrent queueing. Same `input` shape as callSpecializedAgent plus `"waitUponQueueing": false`. Use when you want N agents running in parallel.
+
+**Binding rule for `callSpecializedAgent` and `queueAgents` (MANDATORY):** the `inputs` object MUST contain a key for **every** property declared in the called agent's `inputSchema.properties` — no omissions, no empty `inputs: {}` when the called agent declares any inputs. Each value is a short human-readable description of what to pass (e.g. `"Patient first name"`, `"Auth ID being processed"`) or a `{{VarName}}` reference to a shared variable. If the value comes from earlier in the workflow, describe it in plain language; do not leave keys out and do not pass `null`/empty strings. The frontend only renders rows for keys present in `inputs`, so a missing key disappears from the UI — which is a bug, not a feature.
 - `downloadFile`: browser download. `input: { "target": "<human description of element>", "clickType": "LEFT" }`. Target can reference variables via `{{varName}}`.
 - `clickFill`: type into a form field. `input: { "text": "{{VarName}}" or literal, "target": "<field label>" }`
 - `click`: click an element. `input: { "target": "<element description>", "clickType": "LEFT" | "RIGHT" }`

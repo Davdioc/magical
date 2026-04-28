@@ -187,30 +187,85 @@ const ToolChip = ({ name }) => (
   </span>
 )
 
-const parseInstructionText = (text, agentById) => {
-  if (!text) return null
-  const chipRegex = /:chip\{"id":"([^"]+)","groupId":"[^"]+"\}/g
+const VAR_TOKEN = /\{\{([A-Za-z0-9_]+)\}\}/g
+const CHIP_TOKEN = /:chip\{"id":"([^"]+)","groupId":"[^"]+"\}/g
+
+const VariableChip = ({ name, schema }) => {
+  const isNum = schema?.type === 'number'
+  return (
+    <span className={`np-var-chip${isNum ? ' np-var-chip-num' : ''}`}>
+      <span className="np-var-chip-type">{isNum ? '#' : 'T'}</span>
+      <span className="np-var-chip-label">{name}</span>
+    </span>
+  )
+}
+
+const renderValueWithVars = (val, sharedInputs) => {
+  if (val == null) return ''
+  const text = typeof val === 'string' ? val : String(val)
+  if (!text.includes('{{')) return text
   const parts = []
   let lastIndex = 0
   let match
-  while ((match = chipRegex.exec(text)) !== null) {
+  const re = new RegExp(VAR_TOKEN.source, 'g')
+  while ((match = re.exec(text)) !== null) {
     if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index))
-    const a = agentById?.get(match[1])
-    const v = a ? agentVariant(a) : 'browser'
-    const c = VARIANT_COLORS[v]
+    const name = match[1]
     parts.push(
-      <span key={match.index} className="np-inline-agent-chip" style={{ background: c.bg, color: c.icon }}>
-        <span className="np-inline-chip-icon"><NodeIcon variant={v} /></span>
-        {a?.name ?? match[1]}
-      </span>
+      <VariableChip key={`${match.index}-${name}`} name={name} schema={sharedInputs?.[name]?.schema} />
     )
     lastIndex = match.index + match[0].length
   }
   if (lastIndex < text.length) parts.push(text.slice(lastIndex))
-  return parts.length > 0 ? parts : text
+  return parts
 }
 
-function CommandStep({ cmd, index, agentById }) {
+const renderValueCell = (val, sharedInputs) => {
+  const text = val == null ? '' : (typeof val === 'string' ? val : String(val))
+  const singleVar = text.trim().match(/^\{\{([A-Za-z0-9_]+)\}\}$/)
+  if (singleVar) {
+    const name = singleVar[1]
+    return <VariableChip name={name} schema={sharedInputs?.[name]?.schema} />
+  }
+  return <span className="np-step-val-box">{renderValueWithVars(text, sharedInputs)}</span>
+}
+
+const parseInstructionText = (text, agentById, sharedInputs) => {
+  if (!text) return null
+  const tokens = []
+  const re = new RegExp(`(${CHIP_TOKEN.source})|(${VAR_TOKEN.source})`, 'g')
+  let lastIndex = 0
+  let match
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > lastIndex) tokens.push({ kind: 'text', value: text.slice(lastIndex, match.index) })
+    if (match[1] !== undefined) {
+      tokens.push({ kind: 'chip', id: match[2] })
+    } else {
+      tokens.push({ kind: 'var', name: match[4] })
+    }
+    lastIndex = match.index + match[0].length
+  }
+  if (lastIndex < text.length) tokens.push({ kind: 'text', value: text.slice(lastIndex) })
+  if (tokens.length === 0) return text
+
+  return tokens.map((t, i) => {
+    if (t.kind === 'text') return t.value
+    if (t.kind === 'chip') {
+      const a = agentById?.get(t.id)
+      const v = a ? agentVariant(a) : 'browser'
+      const c = VARIANT_COLORS[v]
+      return (
+        <span key={i} className="np-inline-agent-chip" style={{ background: c.bg, color: c.icon }}>
+          <span className="np-inline-chip-icon"><NodeIcon variant={v} /></span>
+          {a?.name ?? t.id}
+        </span>
+      )
+    }
+    return <VariableChip key={i} name={t.name} schema={sharedInputs?.[t.name]?.schema} />
+  })
+}
+
+function CommandStep({ cmd, index, agentById, sharedInputs }) {
   const { commandId, input = {} } = cmd
   if (commandId === 'custom') {
     return (
@@ -220,7 +275,7 @@ function CommandStep({ cmd, index, agentById }) {
           <span className="np-step-badge">custom</span>
         </div>
         <div className="np-step-body">
-          <p className="np-step-text">{parseInstructionText(input?.instructions ?? '', agentById)}</p>
+          <p className="np-step-text">{parseInstructionText(input?.instructions ?? '', agentById, sharedInputs)}</p>
         </div>
       </div>
     )
@@ -230,7 +285,9 @@ function CommandStep({ cmd, index, agentById }) {
     const a = agentById?.get(agentId)
     const v = a ? agentVariant(a) : 'browser'
     const c = VARIANT_COLORS[v]
-    const params = Object.entries(input).filter(([k]) => k !== 'agent' && k !== 'waitUponQueueing')
+    const callInputs = input?.inputs && typeof input.inputs === 'object'
+      ? Object.entries(input.inputs)
+      : []
     return (
       <div className="np-step">
         <span className="np-step-num">{index + 1}</span>
@@ -238,23 +295,23 @@ function CommandStep({ cmd, index, agentById }) {
           <span className="np-step-badge">{commandId}</span>
         </div>
         <div className="np-step-body">
-          <div className="np-step-row">
+          <div className="np-step-row np-step-row-inline">
             <span className="np-step-key">agent:</span>
             <span className="np-inline-agent-chip" style={{ background: c.bg, color: c.icon }}>
               <span className="np-inline-chip-icon"><NodeIcon variant={v} /></span>
               {a?.name ?? agentId}
             </span>
+            {input.waitUponQueueing !== undefined && (
+              <>
+                <span className="np-step-key np-step-key-spaced">waitUponQueueing:</span>
+                <span className="np-step-val-box np-step-val-box-tight">{String(input.waitUponQueueing)}</span>
+              </>
+            )}
           </div>
-          {input.waitUponQueueing !== undefined && (
-            <div className="np-step-row">
-              <span className="np-step-key">waitUponQueueing:</span>
-              <span className="np-step-val-box">{String(input.waitUponQueueing)}</span>
-            </div>
-          )}
-          {params.map(([key, val]) => (
+          {callInputs.map(([key, val]) => (
             <div key={key} className="np-step-row">
               <span className="np-step-key">{key}:</span>
-              <span className="np-step-val-box">{String(val)}</span>
+              {renderValueCell(val, sharedInputs)}
             </div>
           ))}
         </div>
@@ -273,7 +330,7 @@ function CommandStep({ cmd, index, agentById }) {
           {params.map(([key, val]) => (
             <div key={key} className="np-step-row">
               <span className="np-step-key">{key}:</span>
-              <span className="np-step-val-box">{String(val)}</span>
+              {renderValueCell(val, sharedInputs)}
             </div>
           ))}
         </div>
@@ -283,6 +340,13 @@ function CommandStep({ cmd, index, agentById }) {
 }
 
 const variablePrefix = (schema) => (schema?.type === 'number' ? '#' : 'T')
+
+const resolveFieldSchema = (key, localSchema, sharedInputs) => {
+  if (localSchema?._tag === 'sharedInput' && sharedInputs?.[key]?.schema) {
+    return sharedInputs[key].schema
+  }
+  return localSchema
+}
 
 const FieldChip = ({ name, schema, mode = 'variable' }) => {
   const isFile = mode === 'file'
@@ -304,7 +368,7 @@ const FieldChip = ({ name, schema, mode = 'variable' }) => {
   )
 }
 
-function NodePanel({ agent, variant, agentById, onClose }) {
+function NodePanel({ agent, variant, agentById, sharedInputs, onClose }) {
   const [stepsOpen, setStepsOpen] = useState(true)
   const env = agent?.config?.environmentOptions
   const inputProps = Object.entries(agent?.inputSchema?.properties ?? {})
@@ -436,7 +500,12 @@ function NodePanel({ agent, variant, agentById, onClose }) {
           <div className="np-field-label">{isFileAgent ? 'Files' : 'Inputs'}</div>
           <div className="np-chips">
             {inputProps.map(([key, schema]) => (
-              <FieldChip key={key} name={key} schema={schema} mode={isFileAgent ? 'file' : 'variable'} />
+              <FieldChip
+                key={key}
+                name={key}
+                schema={resolveFieldSchema(key, schema, sharedInputs)}
+                mode={isFileAgent ? 'file' : 'variable'}
+              />
             ))}
             <span className="np-chip np-chip-add" aria-hidden="true">+</span>
           </div>
@@ -446,7 +515,7 @@ function NodePanel({ agent, variant, agentById, onClose }) {
           <div className="np-field-label">Outputs</div>
           <div className="np-chips">
             {outputProps.map(([key, schema]) => (
-              <FieldChip key={key} name={key} schema={schema} />
+              <FieldChip key={key} name={key} schema={resolveFieldSchema(key, schema, sharedInputs)} />
             ))}
             <span className="np-chip np-chip-add" aria-hidden="true">+</span>
           </div>
@@ -465,7 +534,7 @@ function NodePanel({ agent, variant, agentById, onClose }) {
               <span className="np-steps-count">{commands.length} steps</span>
             </div>
             {stepsOpen && commands.map((cmd, i) => (
-              <CommandStep key={cmd.id ?? i} cmd={cmd} index={i} agentById={agentById} />
+              <CommandStep key={cmd.id ?? i} cmd={cmd} index={i} agentById={agentById} sharedInputs={sharedInputs} />
             ))}
             <button type="button" className="np-add-step" aria-label="Add step">+</button>
           </div>
@@ -483,6 +552,7 @@ function AutomationCanvas({ automation, topOffset = 68, leftOffset = 240, onClos
 
   const { nodes: initialNodes, edges } = buildLayout(automation, availableW, availableH)
   const agentById = new Map((automation?.agents ?? []).map((a) => [a.id, a]))
+  const sharedInputs = automation?.config?.sharedInputSchema ?? {}
 
   const [positions, setPositions] = useState(() => {
     const map = {}
@@ -656,6 +726,7 @@ function AutomationCanvas({ automation, topOffset = 68, leftOffset = 240, onClos
             agent={selectedAgent}
             variant={selectedVariant}
             agentById={agentById}
+            sharedInputs={sharedInputs}
             onClose={() => setSelectedId(null)}
           />
         </div>

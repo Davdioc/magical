@@ -1433,6 +1433,7 @@
   color: #0f172a;
   margin: 0;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .np-step-text p {
@@ -1459,11 +1460,27 @@
   font: 400 12px/1.4 'DM Sans', sans-serif;
 }
 
+.np-step-row-inline {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
 .np-step-key {
   color: #6b7280;
   white-space: nowrap;
   flex-shrink: 0;
   padding-top: 3px;
+}
+
+.np-step-key-spaced {
+  margin-left: 12px;
+  padding-top: 0;
+}
+
+.np-step-val-box-tight {
+  flex: 0 0 auto;
+  padding: 3px 10px;
 }
 
 .np-step-val-box {
@@ -1486,6 +1503,42 @@
   font: 600 11px/1 'DM Sans', sans-serif;
   vertical-align: middle;
   white-space: nowrap;
+}
+
+.np-var-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 4px;
+  border-radius: 8px;
+  background: #eaebeb;
+  font: 600 12px/1 'DM Sans', sans-serif;
+  color: #1f2937;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.np-var-chip-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: transparent;
+  color: #334155;
+  font: 700 11px/1 ui-monospace, monospace;
+  flex-shrink: 0;
+}
+
+.np-var-chip-num .np-var-chip-type {
+  background: #eceafc;
+}
+
+.np-var-chip-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .np-inline-chip-icon {
