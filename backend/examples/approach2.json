@@ -1,10 +1,11 @@
 {
   "agents": [
     {
-      "id": "ae37fe5d-b1ad-43fe-bcec-d0b28e91cd66",
+      "id": "9a6851ed-3680-4845-b345-9f5e197fc916",
       "sourceAgentId": null,
       "name": "Orchestrator",
       "description": "",
+      "instructions": "1. :cmd{\"id\":\"custom\",\"input\":\"{\\\"instructions\\\":\\\"Your job is to manage a prior authorization workflow end to end. You will retrieve a queue of patient authorization IDs, then for each one: download the authorization document, extract the relevant data, and use that data to fill out and submit a prior authorization form.\\\\nFollow these steps exactly:\\\\nStep 1 — Get the Auth ID queue Call the Browser Sort Order Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"cc0c9044-58d5-452a-b25a-a4699501bc64\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}. It will return an array of Auth IDs.\\\\nStep 2 — Process two Auth IDs at a time Using Download File Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}and and their respective Read Agents :chip{\\\\\\\"id\\\\\\\":\\\\\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}so that two Auth IDs can be processed concurrently. For every Auth ID in the array, run the following sequence in order:\\\\n- 2a. Download and extract the document Pass the Auth ID to the Download File Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}. It will download the patient's authorization document and internally delegate to the Read Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"} to extract all structured data needed for the form. It will return that extracted data to you.\\\\n- 2b. Fill and submit the form Carry the output from Download File Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"} and pass it as the input of Fill Form Agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"ef506927-5ca9-4ffa-abea-eaae39173ec7\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}. Each Fill Form Agent will populate every required field in the prior authorization form and submit it.\\\"}\",\"preview\":\"Your job is to manage a prior authorization workflow end to end. You will retrieve a queue of patient authorization IDs, then for each one: download the authorization document, extract the relevant data, and use that data to fill out and submit a prior authorization form.\\nFollow these steps exactly:\\nStep 1 — Get the Auth ID queue Call the Browser Sort Order Agent :chip{\\\"id\\\":\\\"cc0c9044-58d5-452a-b25a-a4699501bc64\\\",\\\"groupId\\\":\\\"agent\\\"}. It will return an array of Auth IDs.\\nStep 2 — Process two Auth IDs at a time Using Download File Agent :chip{\\\"id\\\":\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\",\\\"groupId\\\":\\\"agent\\\"}and and their respective Read Agents :chip{\\\"id\\\":\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\",\\\"groupId\\\":\\\"agent\\\"}so that two Auth IDs can be processed concurrently. For every Auth ID in the array, run the following sequence in order:\\n- 2a. Download and extract the document Pass the Auth ID to the Download File Agent :chip{\\\"id\\\":\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\",\\\"groupId\\\":\\\"agent\\\"}. It will download the patient's authorization document and internally delegate to the Read Agent :chip{\\\"id\\\":\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\",\\\"groupId\\\":\\\"agent\\\"} to extract all structured data needed for the form. It will return that extracted data to you.\\n- 2b. Fill and submit the form Carry the output from Download File Agent :chip{\\\"id\\\":\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\",\\\"groupId\\\":\\\"agent\\\"} and pass it as the input of Fill Form Agent :chip{\\\"id\\\":\\\"ef506927-5ca9-4ffa-abea-eaae39173ec7\\\",\\\"groupId\\\":\\\"agent\\\"}. Each Fill Form Agent will populate every required field in the prior authorization form and submit it.\"}\n2. :cmd{\"id\":\"callSpecializedAgent\",\"input\":\"{\\\"agent\\\":\\\":chip{\\\\\\\"id\\\\\\\":\\\\\\\"cc0c9044-58d5-452a-b25a-a4699501bc64\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}\\\"}\",\"preview\":\"Use the **callSpecializedAgent** tool to call the :chip{&quot;id&quot;:&quot;cc0c9044-58d5-452a-b25a-a4699501bc64&quot;,&quot;groupId&quot;:&quot;agent&quot;} agent\"}\n3. :cmd{\"id\":\"queueAgents\",\"input\":\"{\\\"agent\\\":\\\":chip{\\\\\\\"id\\\\\\\":\\\\\\\"a1bb2be6-4216-47d0-91e0-1b2597a66536\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}\\\",\\\"inputs\\\":{\\\"authID\\\":\\\"auth id of the user\\\"},\\\"waitUponQueueing\\\":false}\",\"preview\":\"Use the **queueAgents** tool to queue the :chip{&quot;id&quot;:&quot;a1bb2be6-4216-47d0-91e0-1b2597a66536&quot;,&quot;groupId&quot;:&quot;agent&quot;} agent with:\\n- waitUponQueueing: false\\n- authID: auth id of the user\\n\"}\n4. :cmd{\"id\":\"queueAgents\",\"input\":\"{\\\"agent\\\":\\\":chip{\\\\\\\"id\\\\\\\":\\\\\\\"ef506927-5ca9-4ffa-abea-eaae39173ec7\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}\\\",\\\"inputs\\\":{\\\"gender\\\":\\\"Patient Gender\\\",\\\"drugname\\\":\\\"Drug name\\\",\\\"lastname\\\":\\\"Patients last name\\\",\\\"quantity\\\":\\\"Quantity (including time period)\\\",\\\"Npinumber\\\":\\\"Prescriber NPI Number\\\",\\\"firstname\\\":\\\"Patient first name  \\\",\\\"datofbirth\\\":\\\"Patient Date of birth (yyyymmdd)\\\",\\\"phonenumber\\\":\\\"Patient Phone number\\\",\\\"drugstrength\\\":\\\"Drug Strength (with unit)\\\",\\\"prescriberName\\\":\\\"Prescriber's full name \\\",\\\"routeOfAdministration\\\":\\\"Route of Administration\\\"},\\\"waitUponQueueing\\\":false}\",\"preview\":\"Use the **queueAgents** tool to queue the :chip{&quot;id&quot;:&quot;ef506927-5ca9-4ffa-abea-eaae39173ec7&quot;,&quot;groupId&quot;:&quot;agent&quot;} agent with:\\n- waitUponQueueing: false\\n- gender: Patient Gender\\n- drugname: Drug name\\n- lastname: Patients last name\\n- quantity: Quantity (including time period)\\n- Npinumber: Prescriber NPI Number\\n- firstname: Patient first name  \\n- datofbirth: Patient Date of birth (yyyymmdd)\\n- phonenumber: Patient Phone number\\n- drugstrength: Drug Strength (with unit)\\n- prescriberName: Prescriber&#x27;s full name \\n- routeOfAdministration: Route of Administration\\n\"}",
       "instructionsMode": "commands",
       "instructionsDoc": {
         "commands": [
@@ -14,7 +15,7 @@
             "state": "active",
             "commandId": "custom",
             "input": {
-              "instructions": "Your job is to manage a prior authorization workflow end to end. You will retrieve a queue of patient authorization IDs, then for each one: download the authorization document, extract the relevant data, and use that data to fill out and submit a prior authorization form. Process two Auth IDs concurrently using queueAgents."
+              "instructions": "Your job is to manage a prior authorization workflow end to end. You will retrieve a queue of patient authorization IDs, then for each one: download the authorization document, extract the relevant data, and use that data to fill out and submit a prior authorization form.\nFollow these steps exactly:\nStep 1 — Get the Auth ID queue Call the Browser Sort Order Agent :chip{\"id\":\"cc0c9044-58d5-452a-b25a-a4699501bc64\",\"groupId\":\"agent\"}. It will return an array of Auth IDs.\nStep 2 — Process two Auth IDs at a time Using Download File Agent :chip{\"id\":\"a1bb2be6-4216-47d0-91e0-1b2597a66536\",\"groupId\":\"agent\"}and and their respective Read Agents :chip{\"id\":\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\",\"groupId\":\"agent\"}so that two Auth IDs can be processed concurrently. For every Auth ID in the array, run the following sequence in order:\n- 2a. Download and extract the document Pass the Auth ID to the Download File Agent :chip{\"id\":\"a1bb2be6-4216-47d0-91e0-1b2597a66536\",\"groupId\":\"agent\"}. It will download the patient's authorization document and internally delegate to the Read Agent :chip{\"id\":\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\",\"groupId\":\"agent\"} to extract all structured data needed for the form. It will return that extracted data to you.\n- 2b. Fill and submit the form Carry the output from Download File Agent :chip{\"id\":\"a1bb2be6-4216-47d0-91e0-1b2597a66536\",\"groupId\":\"agent\"} and pass it as the input of Fill Form Agent :chip{\"id\":\"ef506927-5ca9-4ffa-abea-eaae39173ec7\",\"groupId\":\"agent\"}. Each Fill Form Agent will populate every required field in the prior authorization form and submit it."
             }
           },
           {
@@ -23,61 +24,29 @@
             "state": "active",
             "commandId": "callSpecializedAgent",
             "input": {
-              "agent": ":chip{\"id\":\"2fbdd652-89d7-4acb-85f6-6afb600bec0e\",\"groupId\":\"agent\"}"
-            }
-          },
-          {
-            "id": "c0cca892-77f3-4aee-9e52-49ab2710412f",
-            "orderKey": 2,
-            "state": "active",
-            "commandId": "queueAgents",
-            "input": {
-              "agent": ":chip{\"id\":\"2ec8b634-b3f5-47b9-8c21-d42d164b331f\",\"groupId\":\"agent\"}",
-              "inputs": { "authID2": "auth ID of the user" },
-              "waitUponQueueing": false
+              "agent": ":chip{\"id\":\"cc0c9044-58d5-452a-b25a-a4699501bc64\",\"groupId\":\"agent\"}"
             }
           },
           {
             "id": "25f23c9d-077f-48f6-9a4a-86b07aa6c283",
-            "orderKey": 3,
+            "orderKey": 2,
             "state": "active",
             "commandId": "queueAgents",
             "input": {
-              "agent": ":chip{\"id\":\"0aab6ca4-e9d1-492e-9300-2946a7522578\",\"groupId\":\"agent\"}",
-              "inputs": { "authID": "auth id of the user" },
-              "waitUponQueueing": false
-            }
-          },
-          {
-            "id": "1aa844f9-9075-4157-b2fa-e237ee7a0f05",
-            "orderKey": 4,
-            "state": "active",
-            "commandId": "queueAgents",
-            "input": {
-              "agent": ":chip{\"id\":\"cca4a499-6675-40ce-bed7-cce3d8cfe5dc\",\"groupId\":\"agent\"}",
+              "agent": ":chip{\"id\":\"a1bb2be6-4216-47d0-91e0-1b2597a66536\",\"groupId\":\"agent\"}",
               "inputs": {
-                "gender": "Patient Gender",
-                "drugname": "Drug name",
-                "lastname": "Patients last name",
-                "quantity": "Quantity (including time period)",
-                "Npinumber": "Prescriber NPI Number",
-                "firstname": "Patient first name ",
-                "datofbirth": "Patient Date of birth (yyyymmdd)",
-                "phonenumber": "Patient Phone number",
-                "drugstrength": "Drug Strength (with unit)",
-                "prescriberName": "Prescriber's full name ",
-                "routeOfAdministration": "Route of Administration"
+                "authID": "auth id of the user"
               },
               "waitUponQueueing": false
             }
           },
           {
             "id": "d8b9cc10-b998-4007-bce3-20845159aba1",
-            "orderKey": 5,
+            "orderKey": 3,
             "state": "active",
             "commandId": "queueAgents",
             "input": {
-              "agent": ":chip{\"id\":\"a768c01a-a6e2-4e3d-963f-c1275111acf8\",\"groupId\":\"agent\"}",
+              "agent": ":chip{\"id\":\"ef506927-5ca9-4ffa-abea-eaae39173ec7\",\"groupId\":\"agent\"}",
               "inputs": {
                 "gender": "Patient Gender",
                 "drugname": "Drug name",
@@ -98,31 +67,558 @@
         "comments": []
       },
       "config": {
-        "tools": ["reportStop", "callSpecializedAgent", "queueAgents", "requestHumanIntervention"],
-        "environmentOptions": { "environment": "minimal" },
-        "limitations": { "maxDurationSeconds": 21540, "maxToolCalls": 50 },
+        "tools": [
+          "reportStop",
+          "callSpecializedAgent",
+          "queueAgents",
+          "requestHumanIntervention"
+        ],
+        "environmentOptions": {
+          "environment": "minimal"
+        },
+        "limitations": {
+          "maxDurationSeconds": 21540,
+          "maxToolCalls": 50
+        },
         "waitUponQueueing": false,
         "queueableAgentIds": [
-          "a768c01a-a6e2-4e3d-963f-c1275111acf8",
-          "0aab6ca4-e9d1-492e-9300-2946a7522578",
-          "2ec8b634-b3f5-47b9-8c21-d42d164b331f",
-          "cca4a499-6675-40ce-bed7-cce3d8cfe5dc"
+          "ef506927-5ca9-4ffa-abea-eaae39173ec7",
+          "a1bb2be6-4216-47d0-91e0-1b2597a66536"
         ],
         "type": "agentic",
-        "model": { "type": "single-model", "id": "claude-sonnet-4-6" }
+        "model": {
+          "type": "single-model",
+          "id": "claude-sonnet-4-6"
+        },
+        "importedFrom": {
+          "automationId": "2e1c4b3e-9d98-43cc-94b1-15f19c4597c2",
+          "originalAgentId": "9a6851ed-3680-4845-b345-9f5e197fc916"
+        }
       },
-      "inputSchema": { "type": "object", "isNullable": false, "isOptional": false, "properties": {}, "description": "" },
-      "outputSchema": { "type": "object", "isNullable": false, "isOptional": false, "properties": {}, "description": "" },
+      "inputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {},
+        "description": ""
+      },
+      "outputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {},
+        "description": ""
+      },
       "type": "worker",
       "kind": null,
-      "nextAgentIds": ["2fbdd652-89d7-4acb-85f6-6afb600bec0e"],
+      "nextAgentIds": [
+        "cc0c9044-58d5-452a-b25a-a4699501bc64"
+      ],
       "previousAgentIds": []
     },
     {
-      "id": "2fbdd652-89d7-4acb-85f6-6afb600bec0e",
+      "id": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+      "sourceAgentId": null,
+      "name": "Read agent",
+      "description": "",
+      "instructions": "",
+      "instructionsMode": "commands",
+      "instructionsDoc": {
+        "commands": [],
+        "comments": []
+      },
+      "config": {
+        "tools": [],
+        "environmentOptions": {
+          "environment": "minimal"
+        },
+        "limitations": {
+          "maxDurationSeconds": 21540,
+          "maxToolCalls": 50
+        },
+        "waitUponQueueing": false,
+        "queueableAgentIds": [],
+        "type": "extract",
+        "model": {
+          "type": "single-model",
+          "id": "claude-sonnet-4-6"
+        },
+        "importedFrom": {
+          "automationId": "2e1c4b3e-9d98-43cc-94b1-15f19c4597c2",
+          "originalAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a"
+        }
+      },
+      "inputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {
+          "information": {
+            "_tag": "fileAsset",
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Extract the following information:\nPatient Information:\n\nPatient First Name\n\nPatient Last Name\n\nPatient Date of Birth\n\nPatient Phone Number\n\nPatient Gender\n\nPrescriber Information:\n\n\n\n\n\nPrescriber Name\n\n\n\nPrescriber NPI Number\n\nPrescription Information:\n\n\n\n\n\nDrug Name\n\n\n\nDrug Strength (with unit\n\n\n\nRoute of Administration\n\n\n\nQuantity (including time period)",
+            "includeContent": true
+          }
+        },
+        "description": ""
+      },
+      "outputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {
+          "name": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "gender": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "quantity": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "drug_name": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Presciprion drug name"
+          },
+          "last_name": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "NPI_number": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "first_name": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "phone_number": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "date_of_birth": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "drug_strength": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "route_of_administration": {
+            "_tag": "sharedInput",
+            "type": "any"
+          }
+        },
+        "description": ""
+      },
+      "type": "extract",
+      "kind": null,
+      "nextAgentIds": [],
+      "previousAgentIds": [
+        "a1bb2be6-4216-47d0-91e0-1b2597a66536"
+      ]
+    },
+    {
+      "id": "ef506927-5ca9-4ffa-abea-eaae39173ec7",
+      "sourceAgentId": null,
+      "name": "Fill form Agent",
+      "description": "",
+      "instructions": "1. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{firstname}}\\\",\\\"target\\\":\\\"First name\\\"}\",\"preview\":\"Use the **clickFill** tool to fill First name with \\\"{{firstname}}\\\"\"}\n2. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{lastname}}\\\",\\\"target\\\":\\\"Last name\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Last name with \\\"{{lastname}}\\\"\"}\n3. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{datofbirth}}\\\",\\\"target\\\":\\\"Date of Birth\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Date of Birth with \\\"{{datofbirth}}\\\"\"}\n4. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{phonenumber}}\\\",\\\"target\\\":\\\"Phone Number\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Phone Number with \\\"{{phonenumber}}\\\"\"}\n5. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{prescriberName}}\\\",\\\"target\\\":\\\"Prescriber's Name\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Prescriber&#x27;s Name with \\\"{{prescriberName}}\\\"\"}\n6. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{Npinumber}}\\\",\\\"target\\\":\\\"NPI Number\\\"}\",\"preview\":\"Use the **clickFill** tool to fill NPI Number with \\\"{{Npinumber}}\\\"\"}\n7. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{drugname}}\\\",\\\"target\\\":\\\"Drug name\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Drug name with \\\"{{drugname}}\\\"\"}\n8. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{routeOfAdministration}}\\\",\\\"target\\\":\\\"Route of Administration\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Route of Administration with \\\"{{routeOfAdministration}}\\\"\"}\n9. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{drugstrength}}\\\",\\\"target\\\":\\\"Drug strength (with unit)\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Drug strength (with unit) with \\\"{{drugstrength}}\\\"\"}\n10. :cmd{\"id\":\"clickFill\",\"input\":\"{\\\"text\\\":\\\"{{quantity}}\\\",\\\"target\\\":\\\"Quantity (Including time period)\\\"}\",\"preview\":\"Use the **clickFill** tool to fill Quantity (Including time period) with \\\"{{quantity}}\\\"\"}\n11. :cmd{\"id\":\"click\",\"input\":\"{\\\"target\\\":\\\"Submit Prior Authorization\\\",\\\"clickType\\\":\\\"LEFT\\\"}\",\"preview\":\"Use the **click** tool to LEFT click on the Submit Prior Authorization\"}\n12. :cmd{\"id\":\"custom\",\"input\":\"{\\\"instructions\\\":\\\"Fill up the prior authorization form with the instructions given and submit the form once you are done filling up every field\\\"}\",\"preview\":\"Fill up the prior authorization form with the instructions given and submit the form once you are done filling up every field\"}",
+      "instructionsMode": "commands",
+      "instructionsDoc": {
+        "commands": [
+          {
+            "id": "ae1743d8-9978-4e25-8771-1e28e9f8daa4",
+            "orderKey": 0,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{firstname}}",
+              "target": "First name"
+            }
+          },
+          {
+            "id": "680d1d6d-f9ca-41ba-86ce-712a8832b77c",
+            "orderKey": 1,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{lastname}}",
+              "target": "Last name"
+            }
+          },
+          {
+            "id": "b47abb06-0b9c-41c0-87b9-944f07047e4c",
+            "orderKey": 2,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{datofbirth}}",
+              "target": "Date of Birth"
+            }
+          },
+          {
+            "id": "57ddb1b8-c225-4bd5-a918-6e71bbf0198c",
+            "orderKey": 3,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{phonenumber}}",
+              "target": "Phone Number"
+            }
+          },
+          {
+            "id": "730e4850-11bb-41c7-b843-b1ac9c3ae2bd",
+            "orderKey": 4,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{prescriberName}}",
+              "target": "Prescriber's Name"
+            }
+          },
+          {
+            "id": "c27bfb3d-90a5-4528-9607-57deb1d22c05",
+            "orderKey": 5,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{Npinumber}}",
+              "target": "NPI Number"
+            }
+          },
+          {
+            "id": "fdd9be6a-1690-46e6-a827-a6ab3b93eac6",
+            "orderKey": 6,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{drugname}}",
+              "target": "Drug name"
+            }
+          },
+          {
+            "id": "f89c290a-ee82-4dc0-917d-ccdd5a1f3afb",
+            "orderKey": 7,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{routeOfAdministration}}",
+              "target": "Route of Administration"
+            }
+          },
+          {
+            "id": "8ee8aa05-7a07-404d-b367-aff479e54328",
+            "orderKey": 8,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{drugstrength}}",
+              "target": "Drug strength (with unit)"
+            }
+          },
+          {
+            "id": "7573a239-df64-4205-8be1-0ac05d441e79",
+            "orderKey": 9,
+            "state": "active",
+            "commandId": "clickFill",
+            "input": {
+              "text": "{{quantity}}",
+              "target": "Quantity (Including time period)"
+            }
+          },
+          {
+            "id": "ecb5cd55-d942-4225-a6ef-9bc1506ff364",
+            "orderKey": 10,
+            "state": "active",
+            "commandId": "click",
+            "input": {
+              "target": "Submit Prior Authorization",
+              "clickType": "LEFT"
+            }
+          },
+          {
+            "id": "15fd0034-9ea2-4186-9760-fb06244f91d2",
+            "orderKey": 11,
+            "state": "active",
+            "commandId": "custom",
+            "input": {
+              "instructions": "Fill up the prior authorization form with the instructions given and submit the form once you are done filling up every field"
+            }
+          }
+        ],
+        "comments": []
+      },
+      "config": {
+        "tools": [
+          "click",
+          "clickFill"
+        ],
+        "environmentOptions": {
+          "environment": "browser",
+          "startingUrl": "https://v0-prior-authorization-form.vercel.app/",
+          "browserProvider": "browserbase"
+        },
+        "limitations": {
+          "maxDurationSeconds": 1800,
+          "maxToolCalls": 50
+        },
+        "waitUponQueueing": false,
+        "queueableAgentIds": [],
+        "type": "agentic",
+        "model": {
+          "type": "model-pool",
+          "poolId": "09314725-a30e-4090-bd21-dbdfe10957b2"
+        },
+        "importedFrom": {
+          "automationId": "2e1c4b3e-9d98-43cc-94b1-15f19c4597c2",
+          "originalAgentId": "ef506927-5ca9-4ffa-abea-eaae39173ec7"
+        }
+      },
+      "inputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {
+          "gender": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Patient Gender"
+          },
+          "drugname": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Drug name"
+          },
+          "lastname": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Patients last name"
+          },
+          "quantity": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Quantity"
+          },
+          "Npinumber": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Prescriber NPI Number"
+          },
+          "firstname": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Patient first name"
+          },
+          "datofbirth": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Patient Date of birth (yyyymmdd)"
+          },
+          "phonenumber": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Patient Phone number"
+          },
+          "drugstrength": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Drug Strength (with unit)"
+          },
+          "prescriberName": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Prescriber's full name "
+          },
+          "routeOfAdministration": {
+            "type": "string",
+            "isNullable": false,
+            "isOptional": false,
+            "description": "Route Of Administration"
+          }
+        },
+        "description": ""
+      },
+      "outputSchema": null,
+      "type": "worker",
+      "kind": null,
+      "nextAgentIds": [],
+      "previousAgentIds": []
+    },
+    {
+      "id": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+      "sourceAgentId": null,
+      "name": "Download file Agent",
+      "description": "",
+      "instructions": "1. :cmd{\"id\":\"downloadFile\",\"input\":\"{\\\"target\\\":\\\"Download button in the action column. Download the corresponding document for the auth ID {{authID}}\\\",\\\"clickType\\\":\\\"LEFT\\\"}\",\"preview\":\"Use the **downloadFile** tool by LEFT clicking on the Download button in the action column. Download the corresponding document for the auth ID {{authID}}\"}\n2. :cmd{\"id\":\"custom\",\"input\":\"{\\\"instructions\\\":\\\"After downloading the file read the document and extract the following information(use the file agent :chip{\\\\\\\"id\\\\\\\":\\\\\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}):\\\\n\\\\nPatient Information:\\\\n- Patient First Name\\\\n- Patient Last Name\\\\n- Patient Date of Birth\\\\n- Patient Phone Number\\\\n- Patient Gender\\\\nPrescriber Information:\\\\n- Prescriber Name\\\\n- Prescriber NPI Number\\\\nPrescription Information:\\\\n- Drug Name\\\\n- Drug Strength (with unit\\\\n- Route of Administration\\\\n- Quantity (including time period)\\\\n\\\\nThen return them as their various output values. \\\"}\",\"preview\":\"After downloading the file read the document and extract the following information(use the file agent :chip{\\\"id\\\":\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\",\\\"groupId\\\":\\\"agent\\\"}):\\n\\nPatient Information:\\n- Patient First Name\\n- Patient Last Name\\n- Patient Date of Birth\\n- Patient Phone Number\\n- Patient Gender\\nPrescriber Information:\\n- Prescriber Name\\n- Prescriber NPI Number\\nPrescription Information:\\n- Drug Name\\n- Drug Strength (with unit\\n- Route of Administration\\n- Quantity (including time period)\\n\\nThen return them as their various output values. \"}\n3. :cmd{\"id\":\"callSpecializedAgent\",\"input\":\"{\\\"agent\\\":\\\":chip{\\\\\\\"id\\\\\\\":\\\\\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"}\\\",\\\"inputs\\\":{\\\"information\\\":\\\"download file from step 1\\\"}}\",\"preview\":\"Use the **callSpecializedAgent** tool to call the :chip{&quot;id&quot;:&quot;1c8c5bde-839b-44c3-8dfd-0c96926c9b6a&quot;,&quot;groupId&quot;:&quot;agent&quot;} agent with:\\n- information: download file from step 1\\n\"}\n4. :cmd{\"id\":\"custom\",\"input\":\"{\\\"instructions\\\":\\\"Use the :chip{\\\\\\\"id\\\\\\\":\\\\\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\\\\\",\\\\\\\"groupId\\\\\\\":\\\\\\\"agent\\\\\\\"} output to complete the output data\\\"}\",\"preview\":\"Use the :chip{\\\"id\\\":\\\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\\\",\\\"groupId\\\":\\\"agent\\\"} output to complete the output data\"}",
+      "instructionsMode": "commands",
+      "instructionsDoc": {
+        "commands": [
+          {
+            "id": "cd4c75ec-73f0-42cb-ab27-e7787da9e0a6",
+            "orderKey": 0,
+            "state": "active",
+            "commandId": "downloadFile",
+            "input": {
+              "target": "Download button in the action column. Download the corresponding document for the auth ID {{authID}}",
+              "clickType": "LEFT"
+            }
+          },
+          {
+            "id": "709c47d1-ed16-4e0b-9995-653291eb3c2b",
+            "orderKey": 1,
+            "state": "active",
+            "commandId": "custom",
+            "input": {
+              "instructions": "After downloading the file read the document and extract the following information(use the file agent :chip{\"id\":\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\",\"groupId\":\"agent\"}):\n\nPatient Information:\n- Patient First Name\n- Patient Last Name\n- Patient Date of Birth\n- Patient Phone Number\n- Patient Gender\nPrescriber Information:\n- Prescriber Name\n- Prescriber NPI Number\nPrescription Information:\n- Drug Name\n- Drug Strength (with unit\n- Route of Administration\n- Quantity (including time period)\n\nThen return them as their various output values. "
+            }
+          },
+          {
+            "id": "58aaaf0b-0782-4d90-9e14-c6a5d4b92daf",
+            "orderKey": 2,
+            "state": "active",
+            "commandId": "callSpecializedAgent",
+            "input": {
+              "agent": ":chip{\"id\":\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\",\"groupId\":\"agent\"}",
+              "inputs": {
+                "information": "download file from step 1"
+              }
+            }
+          },
+          {
+            "id": "b6db8d4d-f0df-4cd8-a1b8-05ad48a62802",
+            "orderKey": 3,
+            "state": "active",
+            "commandId": "custom",
+            "input": {
+              "instructions": "Use the :chip{\"id\":\"1c8c5bde-839b-44c3-8dfd-0c96926c9b6a\",\"groupId\":\"agent\"} output to complete the output data"
+            }
+          }
+        ],
+        "comments": []
+      },
+      "config": {
+        "tools": [
+          "callSpecializedAgent",
+          "downloadFile",
+          "readDownloadedFile",
+          "reportStop"
+        ],
+        "environmentOptions": {
+          "environment": "browser",
+          "startingUrl": "https://v0-ehr-queue-with-downloads.vercel.app/",
+          "browserProvider": "browserbase"
+        },
+        "limitations": {
+          "maxDurationSeconds": 2100,
+          "maxToolCalls": 50
+        },
+        "waitUponQueueing": false,
+        "queueableAgentIds": [],
+        "type": "agentic",
+        "model": {
+          "type": "single-model",
+          "id": "claude-sonnet-4-6"
+        },
+        "importedFrom": {
+          "automationId": "2e1c4b3e-9d98-43cc-94b1-15f19c4597c2",
+          "originalAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536"
+        }
+      },
+      "inputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {
+          "authID": {
+            "_tag": "sharedInput",
+            "type": "any"
+          }
+        },
+        "description": ""
+      },
+      "outputSchema": {
+        "type": "object",
+        "isNullable": false,
+        "isOptional": false,
+        "properties": {
+          "Gender": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "DrugName": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "LastName": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "Quantity": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "FirstName": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "NPINumber": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "DateOfBirth": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "PhoneNumber": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "DrugStrength": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "PrescriberName": {
+            "_tag": "sharedInput",
+            "type": "any"
+          },
+          "RouteOfAdministration": {
+            "_tag": "sharedInput",
+            "type": "any"
+          }
+        },
+        "description": ""
+      },
+      "type": "worker",
+      "kind": null,
+      "nextAgentIds": [
+        "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a"
+      ],
+      "previousAgentIds": []
+    },
+    {
+      "id": "cc0c9044-58d5-452a-b25a-a4699501bc64",
       "sourceAgentId": null,
       "name": "Browser sort order Agent",
       "description": "",
+      "instructions": "1. :cmd{\"id\":\"custom\",\"input\":\"{\\\"instructions\\\":\\\"Extract all Auth IDs from the Web page and return them as an ordered list.\\\\nSorting rules (apply in order):\\\\n1. Priority: `high` before `standard`\\\\n2. Within the same priority: earlier `date_submitted` first (ascending)\\\\nOutput format:\\\\nReturn only an array of strings, with no commentary, code fences, or extra keys.\\\\nExample: [\\\\\\\"PA-2024-001\\\\\\\", \\\\\\\"PA-2025-001\\\\\\\"]\\\\nEdge cases:\\\\n- If `priority` is missing, treat it as `standard`\\\\n- If `date_submitted` is missing or unparseable, place the record last within its priority group\\\\n- If no Auth IDs are found, return `[]`\\\\n- Preserve the exact formatting of Auth IDs as they appear in the source\\\"}\",\"preview\":\"Extract all Auth IDs from the Web page and return them as an ordered list.\\nSorting rules (apply in order):\\n1. Priority: `high` before `standard`\\n2. Within the same priority: earlier `date_submitted` first (ascending)\\nOutput format:\\nReturn only an array of strings, with no commentary, code fences, or extra keys.\\nExample: [\\\"PA-2024-001\\\", \\\"PA-2025-001\\\"]\\nEdge cases:\\n- If `priority` is missing, treat it as `standard`\\n- If `date_submitted` is missing or unparseable, place the record last within its priority group\\n- If no Auth IDs are found, return `[]`\\n- Preserve the exact formatting of Auth IDs as they appear in the source\"}",
       "instructionsMode": "commands",
       "instructionsDoc": {
         "commands": [
@@ -132,25 +628,38 @@
             "state": "active",
             "commandId": "custom",
             "input": {
-              "instructions": "Extract all Auth IDs from the Web page and return them as an ordered list sorted by priority then date_submitted ascending."
+              "instructions": "Extract all Auth IDs from the Web page and return them as an ordered list.\nSorting rules (apply in order):\n1. Priority: `high` before `standard`\n2. Within the same priority: earlier `date_submitted` first (ascending)\nOutput format:\nReturn only an array of strings, with no commentary, code fences, or extra keys.\nExample: [\"PA-2024-001\", \"PA-2025-001\"]\nEdge cases:\n- If `priority` is missing, treat it as `standard`\n- If `date_submitted` is missing or unparseable, place the record last within its priority group\n- If no Auth IDs are found, return `[]`\n- Preserve the exact formatting of Auth IDs as they appear in the source"
             }
           }
         ],
         "comments": []
       },
       "config": {
-        "tools": ["callSpecializedAgent", "copy"],
+        "tools": [
+          "callSpecializedAgent",
+          "copy"
+        ],
         "environmentOptions": {
           "environment": "browser",
           "saveAuthCookiesAfterRun": false,
           "startingUrl": "https://v0-ehr-queue-with-downloads.vercel.app/",
           "browserProvider": "browserbase"
         },
-        "limitations": { "maxDurationSeconds": 1800, "maxToolCalls": 50 },
+        "limitations": {
+          "maxDurationSeconds": 1800,
+          "maxToolCalls": 50
+        },
         "waitUponQueueing": false,
         "queueableAgentIds": [],
         "type": "agentic",
-        "model": { "type": "model-pool", "poolId": "09314725-a30e-4090-bd21-dbdfe10957b2" }
+        "model": {
+          "type": "model-pool",
+          "poolId": "09314725-a30e-4090-bd21-dbdfe10957b2"
+        },
+        "importedFrom": {
+          "automationId": "2e1c4b3e-9d98-43cc-94b1-15f19c4597c2",
+          "originalAgentId": "cc0c9044-58d5-452a-b25a-a4699501bc64"
+        }
       },
       "inputSchema": {},
       "outputSchema": {
@@ -158,341 +667,268 @@
         "isNullable": false,
         "isOptional": false,
         "properties": {
-          "authID_of_patient": { "_tag": "sharedInput", "type": "any" }
+          "authID_of_patient": {
+            "_tag": "sharedInput",
+            "type": "any"
+          }
         },
         "description": ""
       },
       "type": "specialist",
       "kind": null,
       "nextAgentIds": [],
-      "previousAgentIds": ["ae37fe5d-b1ad-43fe-bcec-d0b28e91cd66"]
-    },
-    {
-      "id": "0aab6ca4-e9d1-492e-9300-2946a7522578",
-      "sourceAgentId": null,
-      "name": "Download file Agent",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": {
-        "commands": [
-          { "id": "cd4c75ec-73f0-42cb-ab27-e7787da9e0a6", "orderKey": 0, "state": "active", "commandId": "downloadFile", "input": { "target": "Download button in the action column. Download the corresponding document for the auth ID {{authID}}", "clickType": "LEFT" } },
-          { "id": "709c47d1-ed16-4e0b-9995-653291eb3c2b", "orderKey": 1, "state": "active", "commandId": "custom", "input": { "instructions": "Extract patient/prescriber/prescription info and return via output values." } },
-          { "id": "58aaaf0b-0782-4d90-9e14-c6a5d4b92daf", "orderKey": 2, "state": "active", "commandId": "callSpecializedAgent", "input": { "agent": ":chip{\"id\":\"570887f2-1b56-4e48-bc91-ba111f0ebf7b\",\"groupId\":\"agent\"}", "inputs": { "information": "download file from step 1" } } }
-        ],
-        "comments": []
-      },
-      "config": {
-        "tools": ["callSpecializedAgent", "downloadFile", "readDownloadedFile", "reportStop"],
-        "environmentOptions": {
-          "environment": "browser",
-          "startingUrl": "https://v0-ehr-queue-with-downloads.vercel.app/",
-          "browserProvider": "browserbase"
-        },
-        "limitations": { "maxDurationSeconds": 2100, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "agentic",
-        "model": { "type": "single-model", "id": "claude-sonnet-4-6" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": { "authID": { "_tag": "sharedInput", "type": "any" } },
-        "description": ""
-      },
-      "outputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "Gender": { "_tag": "sharedInput", "type": "any" },
-          "DrugName": { "_tag": "sharedInput", "type": "any" },
-          "LastName": { "_tag": "sharedInput", "type": "any" },
-          "Quantity": { "_tag": "sharedInput", "type": "any" },
-          "FirstName": { "_tag": "sharedInput", "type": "any" },
-          "NPINumber": { "_tag": "sharedInput", "type": "any" },
-          "DateOfBirth": { "_tag": "sharedInput", "type": "any" },
-          "PhoneNumber": { "_tag": "sharedInput", "type": "any" },
-          "DrugStrength": { "_tag": "sharedInput", "type": "any" },
-          "PrescriberName": { "_tag": "sharedInput", "type": "any" },
-          "RouteOfAdministration": { "_tag": "sharedInput", "type": "any" }
-        },
-        "description": ""
-      },
-      "type": "worker",
-      "kind": null,
-      "nextAgentIds": ["570887f2-1b56-4e48-bc91-ba111f0ebf7b"],
-      "previousAgentIds": []
-    },
-    {
-      "id": "2ec8b634-b3f5-47b9-8c21-d42d164b331f",
-      "sourceAgentId": null,
-      "name": "Download file Agent 2",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": {
-        "commands": [
-          { "id": "978d6116-751b-4fbc-8958-cbee7e13b87c", "orderKey": 0, "state": "active", "commandId": "downloadFile", "input": { "target": "Download button in the action column. Download the corresponding document for the auth ID {{authID2}}", "clickType": "LEFT" } },
-          { "id": "5c6e547a-524a-47ed-bb51-9ebafc0a042b", "orderKey": 1, "state": "active", "commandId": "callSpecializedAgent", "input": { "agent": ":chip{\"id\":\"6209f359-87da-4494-b5ed-2cdad6b68a83\",\"groupId\":\"agent\"}", "inputs": { "information": "download file from step 1" } } }
-        ],
-        "comments": []
-      },
-      "config": {
-        "tools": ["callSpecializedAgent", "downloadFile"],
-        "environmentOptions": {
-          "environment": "browser",
-          "startingUrl": "https://v0-ehr-queue-with-downloads.vercel.app/",
-          "browserProvider": "browserbase"
-        },
-        "limitations": { "maxDurationSeconds": 2100, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "agentic",
-        "model": { "type": "single-model", "id": "claude-sonnet-4-6" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": { "authID2": { "_tag": "sharedInput", "type": "any" } },
-        "description": ""
-      },
-      "outputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "Gender2": { "_tag": "sharedInput", "type": "any" },
-          "DrugName2": { "_tag": "sharedInput", "type": "any" },
-          "LastName2": { "_tag": "sharedInput", "type": "any" },
-          "Quantity2": { "_tag": "sharedInput", "type": "any" },
-          "FirstName2": { "_tag": "sharedInput", "type": "any" },
-          "NPINumber2": { "_tag": "sharedInput", "type": "any" },
-          "DateOfBirth2": { "_tag": "sharedInput", "type": "any" },
-          "PhoneNumber2": { "_tag": "sharedInput", "type": "any" },
-          "DrugStrength2": { "_tag": "sharedInput", "type": "any" },
-          "PrescriberName2": { "_tag": "sharedInput", "type": "any" },
-          "RouteOfAdministration2": { "_tag": "sharedInput", "type": "any" }
-        },
-        "description": ""
-      },
-      "type": "worker",
-      "kind": null,
-      "nextAgentIds": ["6209f359-87da-4494-b5ed-2cdad6b68a83"],
-      "previousAgentIds": []
-    },
-    {
-      "id": "570887f2-1b56-4e48-bc91-ba111f0ebf7b",
-      "sourceAgentId": null,
-      "name": "Read agent",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": { "commands": [], "comments": [] },
-      "config": {
-        "tools": [],
-        "environmentOptions": { "environment": "minimal" },
-        "limitations": { "maxDurationSeconds": 21540, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "extract",
-        "model": { "type": "single-model", "id": "claude-sonnet-4-6" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "information": {
-            "_tag": "fileAsset",
-            "type": "string",
-            "isNullable": false,
-            "isOptional": false,
-            "description": "Extract patient/prescriber/prescription info.",
-            "includeContent": true
-          }
-        },
-        "description": ""
-      },
-      "outputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "gender": { "_tag": "sharedInput", "type": "any" },
-          "drug_name": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescription drug name" },
-          "last_name": { "_tag": "sharedInput", "type": "any" },
-          "NPI_number": { "_tag": "sharedInput", "type": "any" },
-          "first_name": { "_tag": "sharedInput", "type": "any" },
-          "phone_number": { "_tag": "sharedInput", "type": "any" },
-          "date_of_birth": { "_tag": "sharedInput", "type": "any" },
-          "drug_strength": { "_tag": "sharedInput", "type": "any" },
-          "route_of_administration": { "_tag": "sharedInput", "type": "any" },
-          "quantity": { "_tag": "sharedInput", "type": "any" }
-        },
-        "description": ""
-      },
-      "type": "extract",
-      "kind": null,
-      "nextAgentIds": [],
-      "previousAgentIds": ["0aab6ca4-e9d1-492e-9300-2946a7522578"]
-    },
-    {
-      "id": "6209f359-87da-4494-b5ed-2cdad6b68a83",
-      "sourceAgentId": null,
-      "name": "Read agent (Copy)",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": { "commands": [], "comments": [] },
-      "config": {
-        "tools": [],
-        "environmentOptions": { "environment": "minimal" },
-        "limitations": { "maxDurationSeconds": 21540, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "extract",
-        "model": { "type": "single-model", "id": "gemini-2.5-flash" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "information": {
-            "_tag": "fileAsset",
-            "type": "string",
-            "isNullable": false,
-            "isOptional": false,
-            "description": "Extract patient/prescriber/prescription info.",
-            "includeContent": true
-          }
-        },
-        "description": ""
-      },
-      "outputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "gender": { "_tag": "sharedInput", "type": "any" },
-          "drug_name": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescription drug name" },
-          "last_name": { "_tag": "sharedInput", "type": "any" },
-          "NPI_number": { "_tag": "sharedInput", "type": "any" },
-          "first_name": { "_tag": "sharedInput", "type": "any" },
-          "phone_number": { "_tag": "sharedInput", "type": "any" },
-          "date_of_birth": { "_tag": "sharedInput", "type": "any" },
-          "drug_strength": { "_tag": "sharedInput", "type": "any" },
-          "route_of_administration": { "_tag": "sharedInput", "type": "any" },
-          "quantity": { "_tag": "sharedInput", "type": "any" }
-        },
-        "description": ""
-      },
-      "type": "extract",
-      "kind": null,
-      "nextAgentIds": [],
-      "previousAgentIds": ["2ec8b634-b3f5-47b9-8c21-d42d164b331f"]
-    },
-    {
-      "id": "a768c01a-a6e2-4e3d-963f-c1275111acf8",
-      "sourceAgentId": null,
-      "name": "Fill form Agent",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": {
-        "commands": [
-          { "id": "ae1743d8-9978-4e25-8771-1e28e9f8daa4", "orderKey": 0, "state": "active", "commandId": "clickFill", "input": { "text": "{{firstname}}", "target": "First name" } },
-          { "id": "680d1d6d-f9ca-41ba-86ce-712a8832b77c", "orderKey": 1, "state": "active", "commandId": "clickFill", "input": { "text": "{{lastname}}", "target": "Last name" } },
-          { "id": "b47abb06-0b9c-41c0-87b9-944f07047e4c", "orderKey": 2, "state": "active", "commandId": "clickFill", "input": { "text": "{{datofbirth}}", "target": "Date of Birth" } },
-          { "id": "57ddb1b8-c225-4bd5-a918-6e71bbf0198c", "orderKey": 3, "state": "active", "commandId": "clickFill", "input": { "text": "{{phonenumber}}", "target": "Phone Number" } },
-          { "id": "730e4850-11bb-41c7-b843-b1ac9c3ae2bd", "orderKey": 4, "state": "active", "commandId": "clickFill", "input": { "text": "{{prescriberName}}", "target": "Prescriber's Name" } },
-          { "id": "c27bfb3d-90a5-4528-9607-57deb1d22c05", "orderKey": 5, "state": "active", "commandId": "clickFill", "input": { "text": "{{Npinumber}}", "target": "NPI Number" } },
-          { "id": "fdd9be6a-1690-46e6-a827-a6ab3b93eac6", "orderKey": 6, "state": "active", "commandId": "clickFill", "input": { "text": "{{drugname}}", "target": "Drug name" } },
-          { "id": "f89c290a-ee82-4dc0-917d-ccdd5a1f3afb", "orderKey": 7, "state": "active", "commandId": "clickFill", "input": { "text": "{{routeOfAdministration}}", "target": "Route of Administration" } },
-          { "id": "8ee8aa05-7a07-404d-b367-aff479e54328", "orderKey": 8, "state": "active", "commandId": "clickFill", "input": { "text": "{{drugstrength}}", "target": "Drug strength (with unit)" } },
-          { "id": "7573a239-df64-4205-8be1-0ac05d441e79", "orderKey": 9, "state": "active", "commandId": "clickFill", "input": { "text": "{{quantity}}", "target": "Quantity (Including time period)" } },
-          { "id": "ecb5cd55-d942-4225-a6ef-9bc1506ff364", "orderKey": 10, "state": "active", "commandId": "click", "input": { "target": "Submit Prior Authorization", "clickType": "LEFT" } }
-        ],
-        "comments": []
-      },
-      "config": {
-        "tools": ["click", "clickFill"],
-        "environmentOptions": {
-          "environment": "browser",
-          "startingUrl": "https://v0-prior-authorization-form.vercel.app/",
-          "browserProvider": "browserbase"
-        },
-        "limitations": { "maxDurationSeconds": 1800, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "agentic",
-        "model": { "type": "model-pool", "poolId": "09314725-a30e-4090-bd21-dbdfe10957b2" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "gender": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Gender" },
-          "drugname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Drug name" },
-          "lastname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patients last name" },
-          "quantity": { "type": "string", "isNullable": false, "isOptional": false, "description": "Quantity" },
-          "Npinumber": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescriber NPI Number" },
-          "firstname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient first name" },
-          "datofbirth": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Date of birth (yyyymmdd)" },
-          "phonenumber": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Phone number" },
-          "drugstrength": { "type": "string", "isNullable": false, "isOptional": false, "description": "Drug Strength (with unit)" },
-          "prescriberName": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescriber's full name " },
-          "routeOfAdministration": { "type": "string", "isNullable": false, "isOptional": false, "description": "Route Of Administration" }
-        },
-        "description": ""
-      },
-      "outputSchema": null,
-      "type": "worker",
-      "kind": null,
-      "nextAgentIds": [],
-      "previousAgentIds": []
-    },
-    {
-      "id": "cca4a499-6675-40ce-bed7-cce3d8cfe5dc",
-      "sourceAgentId": null,
-      "name": "Fill form Agent 2",
-      "description": "",
-      "instructionsMode": "commands",
-      "instructionsDoc": {
-        "commands": [
-          { "id": "ae1743d8-9978-4e25-8771-1e28e9f8daa4", "orderKey": 0, "state": "active", "commandId": "clickFill", "input": { "text": "{{firstname}}", "target": "First name" } },
-          { "id": "680d1d6d-f9ca-41ba-86ce-712a8832b77c", "orderKey": 1, "state": "active", "commandId": "clickFill", "input": { "text": "{{lastname}}", "target": "Last name" } },
-          { "id": "ecb5cd55-d942-4225-a6ef-9bc1506ff364", "orderKey": 2, "state": "active", "commandId": "click", "input": { "target": "Submit Prior Authorization", "clickType": "LEFT" } }
-        ],
-        "comments": []
-      },
-      "config": {
-        "tools": ["click", "clickFill"],
-        "environmentOptions": {
-          "environment": "browser",
-          "startingUrl": "https://v0-prior-authorization-form.vercel.app/",
-          "browserProvider": "browserbase"
-        },
-        "limitations": { "maxDurationSeconds": 1800, "maxToolCalls": 50 },
-        "waitUponQueueing": false,
-        "queueableAgentIds": [],
-        "type": "agentic",
-        "model": { "type": "model-pool", "poolId": "09314725-a30e-4090-bd21-dbdfe10957b2" }
-      },
-      "inputSchema": {
-        "type": "object", "isNullable": false, "isOptional": false,
-        "properties": {
-          "gender": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Gender" },
-          "drugname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Drug name" },
-          "lastname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patients last name" },
-          "quantity": { "type": "string", "isNullable": false, "isOptional": false, "description": "Quantity" },
-          "Npinumber": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescriber NPI Number" },
-          "firstname": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient first name" },
-          "datofbirth": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Date of birth (yyyymmdd)" },
-          "phonenumber": { "type": "string", "isNullable": false, "isOptional": false, "description": "Patient Phone number" },
-          "drugstrength": { "type": "string", "isNullable": false, "isOptional": false, "description": "Drug Strength (with unit)" },
-          "prescriberName": { "type": "string", "isNullable": false, "isOptional": false, "description": "Prescriber's full name " },
-          "routeOfAdministration": { "type": "string", "isNullable": false, "isOptional": false, "description": "Route Of Administration" }
-        },
-        "description": ""
-      },
-      "outputSchema": null,
-      "type": "worker",
-      "kind": null,
-      "nextAgentIds": [],
-      "previousAgentIds": []
+      "previousAgentIds": [
+        "9a6851ed-3680-4845-b345-9f5e197fc916"
+      ]
     }
   ],
   "config": {
-    "limitations": { "maxDurationSeconds": 21540, "maxToolCalls": 500 },
+    "limitations": {
+      "maxDurationSeconds": 21540,
+      "maxToolCalls": 500
+    },
     "enableVisualChangeChecks": true,
     "humanInterventionTimeoutSeconds": 1800,
     "sharedInputSchema": {
-      "authID": { "sourceAgentId": "0aab6ca4-e9d1-492e-9300-2946a7522578", "sourceLocation": "input", "schema": { "type": "string", "isNullable": false, "isOptional": false, "description": "The Auth ID for the document that needs to be downloaded" } },
-      "authID2": { "sourceAgentId": "2ec8b634-b3f5-47b9-8c21-d42d164b331f", "sourceLocation": "input", "schema": { "type": "string", "isNullable": false, "isOptional": false, "description": "The Auth ID for the document that needs to be downloaded" } },
-      "authID_of_patient": { "sourceAgentId": "2fbdd652-89d7-4acb-85f6-6afb600bec0e", "sourceLocation": "output", "schema": { "type": "array", "element": { "type": "array", "element": { "type": "string" }, "isNullable": false, "isOptional": false, "description": "" }, "isNullable": true, "isOptional": false, "description": "Auth ID value handed over to the next agent in the workflow " } }
+      "name": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Prescribers name"
+        }
+      },
+      "Gender": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient Gender"
+        }
+      },
+      "authID": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "input",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "The Auth ID for the document that needs to be downloaded"
+        }
+      },
+      "gender": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient Gender"
+        }
+      },
+      "DrugName": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Drug name"
+        }
+      },
+      "LastName": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patients last name"
+        }
+      },
+      "Quantity": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Quantity (including time period)"
+        }
+      },
+      "quantity": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Prescription quantity (including time period e.g 30 tablets per 30 days)"
+        }
+      },
+      "FirstName": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient first name"
+        }
+      },
+      "NPINumber": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Prescriber NPI Number"
+        }
+      },
+      "last_name": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient last name"
+        }
+      },
+      "NPI_number": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Prescriber NPI Number"
+        }
+      },
+      "first_name": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient first name"
+        }
+      },
+      "DateOfBirth": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient Date of birth (yyyymmdd)"
+        }
+      },
+      "PhoneNumber": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient Phone number"
+        }
+      },
+      "DrugStrength": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Drug Strength (with unit)"
+        }
+      },
+      "phone_number": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient phone number ###-###-####"
+        }
+      },
+      "date_of_birth": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "number",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Patient Date of birth (yyyymmdd)"
+        }
+      },
+      "drug_strength": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "prescription Drug strength with unit (eg. 10 mg)"
+        }
+      },
+      "PrescriberName": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Prescriber's full name "
+        }
+      },
+      "authID_of_patient": {
+        "sourceAgentId": "cc0c9044-58d5-452a-b25a-a4699501bc64",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "array",
+          "element": {
+            "type": "array",
+            "element": {
+              "type": "string"
+            },
+            "isNullable": false,
+            "isOptional": false,
+            "description": ""
+          },
+          "isNullable": true,
+          "isOptional": false,
+          "description": "Auth ID value handed over to the next agent in the workflow "
+        }
+      },
+      "RouteOfAdministration": {
+        "sourceAgentId": "a1bb2be6-4216-47d0-91e0-1b2597a66536",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "Route of Administration"
+        }
+      },
+      "route_of_administration": {
+        "sourceAgentId": "1c8c5bde-839b-44c3-8dfd-0c96926c9b6a",
+        "sourceLocation": "output",
+        "schema": {
+          "type": "string",
+          "isNullable": false,
+          "isOptional": false,
+          "description": "prescription route of administration (e.g Oral)"
+        }
+      }
     }
   }
 }
